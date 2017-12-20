@@ -1,4 +1,9 @@
 howdy
+<style>
+        .bar {
+            fill: steelblue;
+        }
+    </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 
 
@@ -31,15 +36,20 @@ howdy
          .call(d3.axisBottom(xScale));// another group element to the x axis and sets them to the botom of the x axis
 
         g.append("g")
-         .call(d3.axisLeft(yScale).tickFormat(function(d){//adds the y axis and sets to the left
-             return "$" + d;//puts the money symbol on the value
-         }).ticks(10))//adds ticks to the line
-         .append("text")
-         .attr("y", 6)
-         .attr("dy", "0.71em")
-         .attr("text-anchor", "end")
-         .text("value");  
-         });         
+         .call(d3.axisLeft(yScale).tickFormat(function(d){
+             return "$" + d;// adds money symbol to the numbers on y axis
+         }).ticks(10));// adds the ticks to the line
+
+
+        g.selectAll(".bar")//adds the class bar to the rectangle element
+         .data(data)
+         .enter().append("rect")
+         .attr("class", "bar")
+         .attr("x", function(d) { return xScale(d.year); })// x scale created earlier and pass the year value from our data
+         .attr("y", function(d) { return yScale(d.value); })//pass the data value to our y scale and receive the corresponding y value from the y range
+         .attr("width", xScale.bandwidth())//x-scale returns a calculated bandwidth from the range and padding provided to the x-scale
+         .attr("height", function(d) { return height - yScale(d.value); });//height of the SVG minus the corresponding y-value of the bar from the y-scale
+    });
 
 </script>
 </body>
