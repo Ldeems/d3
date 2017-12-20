@@ -2,14 +2,44 @@ howdy
 <script src="https://d3js.org/d3.v4.min.js"></script>
 
 
-
-
-
+<body>
+<svg width="600" height="500"></svg>
 <script>
-d3.csv("employee.csv", function(data) {
-    for (var i = 0; i < data.length; i++) {
-        console.log(data[i].Name);
-        console.log(data[i].Age);
-    }
-});
+
+    var svg = d3.select("svg"),// selects the svg element
+        margin = 200,
+        width = svg.attr("width") - margin,//sets the width
+        height = svg.attr("height") - margin;//sets the hieght
+
+
+    var xScale = d3.scaleBand().range ([0, width]).padding(0.4),//creates x axis
+        yScale = d3.scaleLinear().range ([height, 0]);//creats y axis
+
+    var g = svg.append("g")
+               .attr("transform", "translate(" + 100 + "," + 100 + ")");//adds a group element to our svg
+
+    d3.csv("XYZ.csv", function(error, data) {//loads the csv using the d3.csv method
+        if (error) {
+            throw error;
+        }
+
+        xScale.domain(data.map(function(d) { return d.year; }));//domain value for x axis
+        yScale.domain([0, d3.max(data, function(d) { return d.value; })]);// domain value for y axis, uses max to set the max lol
+
+        g.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(xScale));// another group element to the x axis and sets them to the botom of the x axis
+
+        g.append("g")
+         .call(d3.axisLeft(yScale).tickFormat(function(d){//adds the y axis and sets to the left
+             return "$" + d;//puts the money symbol on the value
+         }).ticks(10))//adds ticks to the line
+         .append("text")
+         .attr("y", 6)
+         .attr("dy", "0.71em")
+         .attr("text-anchor", "end")
+         .text("value");  
+         });         
+
 </script>
+</body>
