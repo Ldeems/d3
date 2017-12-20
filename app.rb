@@ -6,3 +6,4 @@ require 'rubygems'
 get '/' do
     erb :page1
 end    
+
